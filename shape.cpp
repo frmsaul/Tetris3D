@@ -26,7 +26,7 @@ Shape::Shape(){
   points.push_back(pair<int, int>(1, 0));
   points.push_back(pair<int, int>(0,1)); 
   set_bounding_box();
-  type = 1;
+  type = 2;
 }
 
 pair<int, int> random_point(unordered_set<pair<int, int> > S){
