@@ -1,0 +1,1 @@
+g++ shape.cpp TetrisEngine.cpp TetrisGraphics.cpp -o Tetris_Graphics -lGL -lGLU -lglut
