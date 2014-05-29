@@ -30,21 +30,21 @@ void draw_cube(int color){
     glutSolidCube(1);
     break;
   case 2:
-    glColor4f(1.0f, 1.0f, 0.0f, BRICK_ALPHA);
+    glColor4f(0.0f, 0.0f, 1.0f, BRICK_ALPHA);
     glutSolidCube(1);
     break;
   case 3:
-    glColor4f(1.0f, 0.0f, 1.0f, BRICK_ALPHA);
+    glColor4f(1.0f, 1.0f, 0.0f, BRICK_ALPHA);
     glutSolidCube(1);
     break;
   case 4:
-    glColor4f(1.0f, 1.0f, 0.0f, BRICK_ALPHA);
+    glColor4f(0.0f, 1.0f, 1.0f, BRICK_ALPHA);
     glutSolidCube(1);
     break;
   default:
     break;
   }
-  glColor3f(1.0f, 0.0f, 1.0f);
+  glColor4f(1.0f, 0.0f, 1.0f, 0.5f);
   glutWireCube(1);
 }
 
@@ -103,6 +103,44 @@ void camera_Move(int key, int x, int y){
     break;
   }
 }
+
+void CubeControl(unsigned char key, int x, int y){
+  if(camera_z < 0 && abs(camera_z) > abs(camera_x)){
+    if(key == 'w') key = 's';
+    else if(key == 's') key = 'w';
+
+    if(key == 'a') key = 'd';
+    else if(key == 'd') key = 'a';
+  }
+  if(camera_x < 0 && abs(camera_z) < abs(camera_x)){
+    if(key == 'w') key = 'd';
+    else if(key == 'd') key = 'w';
+
+    if(key == 'a') key = 's';
+    else if(key == 's') key = 'a';
+
+    if(key == 'w') key = 's';
+    else if(key == 's') key = 'w';
+  }
+
+  if(camera_x > 0 && abs(camera_z) < abs(camera_x)){
+    printf("THIS");
+    if(key == 'w') key = 'd';
+    else if(key == 'd') key = 'w';
+
+    if(key == 'a') key = 's';
+    else if(key == 's') key = 'a';
+
+    if(key == 'a') key = 'd';
+    else if(key == 'd') key = 'a';
+  }
+
+  tet->restricted_move(key);
+}
+
+
+
+
 void camera_Move_release(int key, int x, int y){
   switch(key){
   case GLUT_KEY_UP:
@@ -153,11 +191,12 @@ void render(void) {
     }
     printf("X: %.2f , Z: %.2f \n", camera_x, camera_z);
     glutSwapBuffers();
-    if(glutGet(GLUT_ELAPSED_TIME) - time > 1000){
+    if(glutGet(GLUT_ELAPSED_TIME) - time > 2000){
       //cout << "TIME: " << time(0) << endl;
       //cout << time(0) - sysTime << endl;
-      tet->RandomizeMats();
+      //tet->RandomizeMats();
       //tet->randomize_type();
+      tet->Gravity();
       time = glutGet(GLUT_ELAPSED_TIME);
     }
 }
@@ -179,6 +218,7 @@ void initGraphics(int argc, char** argv){
 	//glutKeyboardFunc(processNormalKeys);
 	glutSpecialFunc(camera_Move);
 	glutSpecialUpFunc(camera_Move_release);
+	glutKeyboardFunc(CubeControl);
 	/*
 	// here are the two new functions
 	glutMouseFunc(mouseButton);
@@ -199,7 +239,8 @@ int main(int argc, char** argv){
   size_y = 5; 
   size_z = 9;
   tet = new TetrisEngine(size_x, size_y, size_z);
-  tet->RandomizeMats();
+  //tet->RandomizeMats();
+  tet->SpawnShape(Shape());
   initGraphics(argc, argv);
 
   delete tet;
